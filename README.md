@@ -59,3 +59,49 @@ Network Intrusion Detection: https://www.kaggle.com/datasets/aryashah2k/nfuqnids
 ## Machine Learning Model
 
 This project aims to develop a machine-learning model to distinguish between benign and malicious network flows and classify attack types. The label column identifies whether a flow is benign or malicious and specifies the attack category. I will most likely employ a Random Forest classifier model, but test out logistic regression and a K-means unsupervised model.
+
+## Data Acquisition and Preparation
+
+1. **Downloaded the Kaggle API Token File:** Generated a new API token from Kaggle account settings under the API section, which prompted the download of the `kaggle.json` file to my local system.
+2. **Located Dataset on Kaggle:** Found the required network intrusion detection dataset for the project. 
+3. **Created a Virtual Machine in Google Cloud Platform:** Created a virtual instance following all default requirements (Iowa central server, E2 instance, size e2 medium) except changing boot disk size to 50GB and renaming the instance to “network-intrusion project-v1”.
+4. **Connected to the Linux Instance with a Secure Shell:** Accessed the VM by clicking the SSH button next to the instance name in the GCP console, establishing a secure connection.
+5. **Uploaded and Copied the Kaggle API Token File:** Transferred the `kaggle.json` file to the VM and placed it in the `~/.kaggle` directory to authenticate with Kaggle's API.
+6. **Installed Additional Software and Set Up Python Environment:** On the VM, installed necessary software like Python and kaggle using `pip install`. Set up a virtual environment for Python development.
+7. **Downloaded Dataset from Kaggle:** Utilized the Kaggle API to download the network intrusion detection dataset directly to the VM.
+8. **Unzipped the Archive File:** Extracted the dataset files from the downloaded zip file using the unzip command.
+9. **Copied Files to Google Cloud Storage:** Moved the dataset files from the VM to Google Cloud Storage for later access, and organized them into necessary folders like landing, cleaned, code, models, and trusted.
+10. **Stopped and Deleted the Linux Instance:** To manage resources and costs, stopped the VM when tasks were completed and then deleted the instance from the GCP console.
+
+## EDA and Data Cleaning
+
+While cleaning the data, I made several key observations:
+- The data was already cleaned as there were no null or duplicate values.
+- A few data types that weren't int64, such as object data types and float, were converted into int data types to standardize them.
+- Given the project's focus on anomaly analysis, max or min values were crucial and couldn't be disregarded.
+- The dataset had a potential issue of overfitting due to its 46 columns; hence, some columns needed removal to simplify the model.
+- The label had a class imbalance with more benign values than malicious, which needed addressing.
+- Removed columns deemed insignificant to the label such as 'SRC_TO_DST_SECOND_BYTES', 'DST_TO_SRC_SECOND_BYTES', 'FTP_COMMAND_RET_CODE', 'ICMP_IPV4_TYPE' after a heatmap analysis.
+- Chunking of data was necessary during processing to prevent system crashes due to resource limitations.
+
+## Feature Engineering
+
+- Dropped the two address columns on the professor's suggestion as they were private IPs and had little relevance.
+- Initialized a Spark session and read the cleaned data from the GCS bucket.
+- Encoded two object data type features, dataset and attack, in addition to converting float to int.
+- Employed vector assemblers to combine features into a single vector and normalized them through MinMaxScaler for modeling.
+- Utilized RandomForestClassifier for modeling and integrated vector assembler and scalar into a Pipeline.
+- Performed hyperparameter tuning using TrainValidationSplit to optimize the model based on the ROC metric.
+- Evaluated the trained model on the test dataset to produce predictions and calculated the ROC AUC metric.
+
+## Done Visualization
+
+- **Random Forest ROC Curve:** Nearly perfect ROC curve indicating the model is very good at predicting positive and negative classes.Very few false positives and false negatives.
+- **Logistic Regression ROC Curve:** Good ROC curve indicating the model is good at predicting positive and negative classes but some false positives and some false negatives do appear.
+- **Precision-Recall for Random Forest:** Nearly perfect curve indicating high precision and recall.
+- **Heatmap:** Used to check for multicollinearity among features which might affect the model's performance.According to the heatmap, there are a few variables that correlate with one another that should be addressed if I were to revisit the model.
+
+## Conclusion
+
+The Network Intrusion Detection System project leverages machine learning to differentiate between benign and malicious network flows while categorizing various types of network attacks. Utilizing the Network Intrusion Dataset from Kaggle, which comprises 11,994,893 records of network traffic data including DoS, DDoS, brute force, and SQL injection attacks, the project pipeline included: data cleaning to standardize data types and address class imbalances, feature engineering to encode categorical data and normalize features, and the development of a RandomForestClassifier model. The Logistic Regression model was tested as well but not as accurate as the random forest model. Hyperparameter tuning was then employed for the random forest model through cross-validation. After this was done, the random forest’s overfitting issue was addressed and the performance with accuracy, precision, recall, and F1 scores were all above 0.98, outperforming a baseline Logistic Regression model. The visualization analysis included ROC and Precision-Recall curves to validate model effectiveness and a heatmap to identify multicollinearity among features. These visual tools confirmed the model's high precision and recall, making it well-suited for environments where false positives are particularly undesirable. However, it was detected that multi-collinearity could interfere with some of the models. So to improve later on, I can remove some more variables to prevent this
+
