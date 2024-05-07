@@ -5,7 +5,7 @@
 The Network Intrusion Dataset is a unified collection of network traffic data, consolidating various smaller datasets into a comprehensive resource for network intrusion detection research. It includes a wide range of network flows from different setups and attack scenarios. This dataset has 11,994,893 records, with 76.77% being benign flows and 23.23% classified as attacks. It has modified attack categories for uniformity, which are: DoS, DDoS, brute force, and SQL injection.
 
 ### Dataset Link: 
-Network Intrusion Detection 
+Network Intrusion Detection: https://www.kaggle.com/datasets/aryashah2k/nfuqnidsv2-network-intrusion-detection-dataset 
 
 ## Features
 
@@ -58,4 +58,4 @@ Network Intrusion Detection
 
 ## Machine Learning Model
 
-This project aims to develop a machine-learning model to distinguish between benign and malicious network flows and classify attack types. The label column identifies whether a flow is benign or malicious and specifies the attack category. I will most likely employ a Random Forest classifier model, but test out a decision tree and a K-means unsupervised model.
+This project aims to develop a machine-learning model to distinguish between benign and malicious network flows and classify attack types. The label column identifies whether a flow is benign or malicious and specifies the attack category. I will most likely employ a Random Forest classifier model, but test out logistic regression and a K-means unsupervised model.
